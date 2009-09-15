@@ -40,6 +40,8 @@ public class AdvancedSynonymPlugin implements Plugin
 		desktop.registerMenuAction ("Data", synDlgAction);
 	}
 
+	public void done() {}
+
 	private final SynDlgAction synDlgAction = new SynDlgAction();
 	
 	/**
