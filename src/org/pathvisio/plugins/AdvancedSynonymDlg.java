@@ -19,7 +19,8 @@ import javax.swing.event.ListSelectionListener;
 import org.bridgedb.IDMapper;
 import org.bridgedb.IDMapperCapabilities;
 import org.bridgedb.IDMapperException;
-import org.bridgedb.IDMapperStack;
+import org.pathvisio.data.GdbManager;
+import org.pathvisio.debug.Logger;
 import org.pathvisio.gui.swing.PvDesktop;
 
 import com.jgoodies.forms.layout.CellConstraints;
@@ -36,22 +37,23 @@ public class AdvancedSynonymDlg
 
 	private JList list;
 	private JTextArea txtInfo;
+	private JButton btnRemove;
 
 	public void createAndShowGUI()
 	{
 		final JFrame aboutDlg = new JFrame();
 		
 		FormLayout layout = new FormLayout(
-				"4dlu, 200dlu, 4dlu, 200dlu, 4dlu",
-				"4dlu, pref:grow, 4dlu, pref, 4dlu, pref, 4dlu");
-		
+				"4dlu, 50dlu:grow, 4dlu, 50dlu:grow, 4dlu",
+				"4dlu, fill:50dlu:grow, 4dlu, pref, 4dlu, pref, 4dlu");
+		layout.setColumnGroups   (new int[][]{ {2, 4} });
+
 		CellConstraints cc = new CellConstraints();
 		
 		txtInfo = new JTextArea(40, 5);
 		
 		list = new JList(
 				desktop.getSwingEngine().getGdbManager());
-		
 		list.getSelectionModel().addListSelectionListener(new ListSelectionListener()
 		{
 			public void valueChanged(ListSelectionEvent arg0) 
@@ -68,7 +70,8 @@ public class AdvancedSynonymDlg
 		btnOk.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e)
 			{
-				addPressed();
+				aboutDlg.setVisible(false);
+				aboutDlg.dispose();
 			}
 		});
 		
@@ -76,53 +79,82 @@ public class AdvancedSynonymDlg
 		btnAdd.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e)
 			{
-				aboutDlg.setVisible (false);
-				aboutDlg.dispose();
+				addPressed();
 			}
 		});
 
-		JButton btnRemove = new JButton("Remove");
+		btnRemove = new JButton("Remove");
 		btnRemove.setEnabled(false);
-		btnAdd.addActionListener(new ActionListener() {
+		btnRemove.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e)
 			{
-				//TODO
+				removePressed();
 			}
 		});
 
 		dialogBox.add (new JScrollPane(list), cc.xy (2, 2));
 		dialogBox.add (new JScrollPane(txtInfo), cc.xy (4, 2));
-		
+
 		JPanel buttonPanel = new JPanel();
 		buttonPanel.add (btnOk);
 		buttonPanel.add (btnAdd);
+		buttonPanel.add (btnRemove);
 		dialogBox.add (buttonPanel, cc.xyw (2, 6, 3));			
 		
 		aboutDlg.setTitle("Advanced Synonym Database Settings");
 		aboutDlg.add (dialogBox);
 		aboutDlg.pack();
+		aboutDlg.setSize(600, 400);
 		aboutDlg.setLocationRelativeTo(desktop.getFrame());
 		aboutDlg.setVisible(true);
 	}
 
+	private void removePressed()
+	{
+		int selected = list.getSelectedIndex();
+		if (selected > 0)
+		{
+			GdbManager manager = desktop.getSwingEngine().getGdbManager();
+			IDMapper mapper = manager.getCurrentGdb().getIDMapperAt(selected);
+			try {
+				manager.removeMapper(mapper);
+			} 
+			catch (IDMapperException e1) 
+			{
+				//Problem during close can be ignored. Just log exception.
+				Logger.log.error ("Could not close connection ", e1);
+			}
+		}
+	}
+	
 	private void addPressed()
 	{
-		String result = JOptionPane.showInputDialog(desktop.getFrame(), "Please enter a BridgeDb connection String", 
+		String connectString = JOptionPane.showInputDialog(desktop.getFrame(), "Please enter a BridgeDb connection String", 
 				"Add connection", JOptionPane.QUESTION_MESSAGE);
-		IDMapperStack stack = desktop.getSwingEngine().getGdbManager().getCurrentGdb();
-		try
+		if (connectString != null)
 		{
-			stack.addIDMapper(result);
-		}
-		catch (IDMapperException ex)
-		{
-			JOptionPane.showMessageDialog(desktop.getFrame(), "Could not connect: " + ex.getMessage());
+			GdbManager manager = desktop.getSwingEngine().getGdbManager();
+			try
+			{
+				manager.addMapper(connectString);
+			}
+			catch (IDMapperException ex)
+			{
+				//TODO: redundant with SwingEngine.selectGdb
+				String msg = "Failed to open database; " + ex.getMessage();
+				JOptionPane.showMessageDialog(null, 
+						"Error: " + msg + "\n\n" + "See the error log for details.",
+						"Error",
+						JOptionPane.ERROR_MESSAGE);
+				Logger.log.error(msg, ex);
+			}
 		}
 	}
 	
 	private void updateInfo()
 	{
 		int selected = list.getSelectedIndex();
+		btnRemove.setEnabled(selected >= 0);
 		if (selected < 0)
 		{
 			txtInfo.setText("No Data");
