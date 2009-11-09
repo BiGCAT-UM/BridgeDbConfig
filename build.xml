@@ -21,8 +21,7 @@
   </path>
   
   <target name="prepare">
-	<mkdir dir="build"/>
-
+	<mkdir dir="build/code"/>
 	<fail message="Can't find ${pathvisio.dir}/pathvisio.jar, please specify the path to pathvisio with -Dpathvisio.dir=....">
 		<condition>
 			<not><available file="${pathvisio.dir}/pathvisio.jar"/></not>
@@ -34,17 +33,20 @@
 	<javac srcdir="src"
 		   includes="**"
 		   debug="true"
-		   destdir="build">
+		   destdir="build/code">
 	  <classpath refid="project.class.path"/>
 	</javac>
   </target>
   
   <target name="jar" depends="build">
+	<unjar dest="build/libs">
+		<fileset dir="lib" includes="*.jar" />
+	</unjar>
 	<jar jarfile="${jar.name}">
 		<manifest>
 			<attribute name="PathVisio-Plugin-Class" value="org.pathvisio.plugins.AdvancedSynonymPlugin"/>
 		</manifest>
-	  <fileset dir="build" includes="**/*.class"/>
+	  <fileset dir="build/code" includes="**/*.class"/>
 	</jar>
   </target>
 

@@ -21,6 +21,7 @@ import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
 
+import org.pathvisio.debug.Logger;
 import org.pathvisio.gui.swing.PvDesktop;
 import org.pathvisio.plugin.Plugin;
 
@@ -38,6 +39,22 @@ public class AdvancedSynonymPlugin implements Plugin
 		
 		// register our action in the "Help" menu.
 		desktop.registerMenuAction ("Data", synDlgAction);
+		
+		// register more idmapper Drivers
+		try
+		{
+			Class.forName("org.bridgedb.file.IDMapperText");
+			Class.forName("org.bridgedb.webservice.bridgerest.BridgeRest");
+			Class.forName("org.bridgedb.webservice.biomart.IDMapperBiomart");
+			Class.forName("org.bridgedb.webservice.picr.IDMapperPicr");
+			Class.forName("org.bridgedb.webservice.picr.IDMapperPicrRest");
+			Class.forName("org.bridgedb.webservice.cronos.IDMapperCronos");
+			Class.forName("org.bridgedb.webservice.synergizer.IDMapperSynergizer");
+		}
+		catch (ClassNotFoundException ex)
+		{
+			Logger.log.error ("Could not register IDMapper: ", ex);
+		}
 	}
 
 	public void done() {}

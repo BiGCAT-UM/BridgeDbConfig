@@ -128,7 +128,7 @@ public class AdvancedSynonymDlg
 	private void removePressed()
 	{
 		int selected = list.getSelectedIndex();
-		if (selected > 0)
+		if (selected >= 0)
 		{
 			GdbManager manager = desktop.getSwingEngine().getGdbManager();
 			IDMapper mapper = manager.getCurrentGdb().getIDMapperAt(selected);
