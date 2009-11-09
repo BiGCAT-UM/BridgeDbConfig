@@ -7,12 +7,15 @@ import java.util.Collections;
 import java.util.List;
 
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -95,6 +98,19 @@ public class AdvancedSynonymDlg
 		dialogBox.add (new JScrollPane(list), cc.xy (2, 2));
 		dialogBox.add (new JScrollPane(txtInfo), cc.xy (4, 2));
 
+		boolean isTransitive = desktop.getSwingEngine().getGdbManager().getCurrentGdb().getTransitive();
+		final JCheckBox ckTransitive = new JCheckBox("Transitive", isTransitive);
+		
+		dialogBox.add (ckTransitive, cc.xyw (2,4,3));
+		ckTransitive.addChangeListener(new ChangeListener()
+		{
+			public void stateChanged(ChangeEvent arg0) 
+			{
+				desktop.getSwingEngine().getGdbManager().getCurrentGdb().
+					setTransitive(ckTransitive.isSelected());
+			}
+		});
+		
 		JPanel buttonPanel = new JPanel();
 		buttonPanel.add (btnOk);
 		buttonPanel.add (btnAdd);
@@ -175,7 +191,7 @@ public class AdvancedSynonymDlg
 				txtInfo.append("Supported sources: " + caps.getSupportedSrcDataSources() + "\n");
 				txtInfo.append("Supported targets: " + caps.getSupportedTgtDataSources() + "\n");
 			}
-			catch (IDMapperException ex) { /* ignore, just a litte less info */ }
+			catch (IDMapperException ex) { /* ignore, just a little less info */ }
 			txtInfo.append ("Free search supported: " + caps.isFreeSearchSupported());
 		}
 	}	
