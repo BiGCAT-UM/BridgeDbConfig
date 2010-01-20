@@ -1,5 +1,6 @@
 package org.pathvisio.plugins;
 
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -9,11 +10,13 @@ import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.ListCellRenderer;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
@@ -57,6 +60,7 @@ public class AdvancedSynonymDlg
 		
 		list = new JList(
 				desktop.getSwingEngine().getGdbManager());
+		list.setCellRenderer(new BridgeRenderer());
 		list.getSelectionModel().addListSelectionListener(new ListSelectionListener()
 		{
 			public void valueChanged(ListSelectionEvent arg0) 
@@ -194,5 +198,37 @@ public class AdvancedSynonymDlg
 			catch (IDMapperException ex) { /* ignore, just a little less info */ }
 			txtInfo.append ("Free search supported: " + caps.isFreeSearchSupported());
 		}
-	}	
+	}
+	
+	private static class BridgeRenderer extends JLabel implements ListCellRenderer 
+	{
+	     public BridgeRenderer() {
+	         setOpaque(true);
+	     }
+	     public Component getListCellRendererComponent(
+	         JList list,
+	         Object value,
+	         int index,
+	         boolean isSelected,
+	         boolean cellHasFocus)
+	     {
+	    	 String text = value.toString();
+	    	 if (text == null || "".equals(text))
+	    		 text = "<unnamed idmapper>";
+	    	 // shorten long names
+	    	 if (text.length() > 50) text = text.substring(0,10) + "..." + 
+	    	 	text.substring(text.length()-30);
+	         setText(text);
+	         if (isSelected) {
+	             setBackground(list.getSelectionBackground());
+	             setForeground(list.getSelectionForeground());
+	         } else {
+	             setBackground(list.getBackground());
+	             setForeground(list.getForeground());
+	         }
+
+	         return this;
+	     }
+	 }
+
 }
