@@ -50,6 +50,7 @@ public class AdvancedSynonymPlugin implements Plugin
 			Class.forName("org.bridgedb.webservice.picr.IDMapperPicrRest");
 			Class.forName("org.bridgedb.webservice.cronos.IDMapperCronos");
 			Class.forName("org.bridgedb.webservice.synergizer.IDMapperSynergizer");
+			Class.forName ("com.mysql.jdbc.Driver");
 		}
 		catch (ClassNotFoundException ex)
 		{
