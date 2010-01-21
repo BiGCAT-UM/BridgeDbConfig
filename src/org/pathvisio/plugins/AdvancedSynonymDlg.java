@@ -1,3 +1,19 @@
+// PathVisio,
+// a tool for data visualization and analysis using Biological Pathways
+// Copyright 2006-2009 BiGCaT Bioinformatics
+//
+// Licensed under the Apache License, Version 2.0 (the "License"); 
+// you may not use this file except in compliance with the License. 
+// You may obtain a copy of the License at 
+// 
+// http://www.apache.org/licenses/LICENSE-2.0 
+//  
+// Unless required by applicable law or agreed to in writing, software 
+// distributed under the License is distributed on an "AS IS" BASIS, 
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+// See the License for the specific language governing permissions and 
+// limitations under the License.
+//
 package org.pathvisio.plugins;
 
 import java.awt.Component;
@@ -9,6 +25,7 @@ import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -16,6 +33,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.ListCellRenderer;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -149,8 +167,8 @@ public class AdvancedSynonymDlg
 	
 	private void addPressed()
 	{
-		String connectString = JOptionPane.showInputDialog(desktop.getFrame(), "Please enter a BridgeDb connection String", 
-				"Add connection", JOptionPane.QUESTION_MESSAGE);
+		String connectString = HistoryInputDlg.getInputWithHistory(desktop.getFrame(), "Please enter a BridgeDb connection String", 
+				"Add connection");
 		if (connectString != null)
 		{
 			GdbManager manager = desktop.getSwingEngine().getGdbManager();
