@@ -40,6 +40,7 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import org.bridgedb.BridgeDb;
 import org.bridgedb.IDMapper;
 import org.bridgedb.IDMapperCapabilities;
 import org.bridgedb.IDMapperException;
@@ -174,7 +175,8 @@ public class AdvancedSynonymDlg
 			GdbManager manager = desktop.getSwingEngine().getGdbManager();
 			try
 			{
-				manager.addMapper(connectString);
+				IDMapper mapper = BridgeDb.connect(connectString);
+				manager.addMapper(mapper);
 			}
 			catch (IDMapperException ex)
 			{
