@@ -21,9 +21,15 @@ import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
 
+import org.bridgedb.BridgeDb;
+import org.bridgedb.IDMapper;
+import org.bridgedb.IDMapperException;
+import org.pathvisio.data.GdbManager;
 import org.pathvisio.debug.Logger;
 import org.pathvisio.gui.swing.PvDesktop;
 import org.pathvisio.plugin.Plugin;
+import org.pathvisio.preferences.Preference;
+import org.pathvisio.preferences.PreferenceManager;
 
 /**
  * A tutorial implementation of a PathVisio plug-in
@@ -31,6 +37,40 @@ import org.pathvisio.plugin.Plugin;
 public class AdvancedSynonymPlugin implements Plugin
 {
 	private PvDesktop desktop;
+	
+	private enum AdvancedSynonymPreferences implements Preference
+	{
+		BRIDGEDB_CONNECTION_1,
+		BRIDGEDB_CONNECTION_2,
+		BRIDGEDB_CONNECTION_3,
+		BRIDGEDB_CONNECTION_4,
+		BRIDGEDB_CONNECTION_5,
+		
+		BRIDGEDB_TRANSITIVE("" + false);
+		
+		private final String defaultValue;
+		
+		private AdvancedSynonymPreferences()
+		{
+			defaultValue = null;
+		}
+		
+		private AdvancedSynonymPreferences(String defaultValue)
+		{
+			this.defaultValue = defaultValue;
+		}
+		
+		@Override
+		public String getDefault()
+		{
+			return defaultValue;
+		}
+		
+		static Preference[] connectionStrings = new Preference[] {
+			BRIDGEDB_CONNECTION_1, BRIDGEDB_CONNECTION_2, BRIDGEDB_CONNECTION_3, BRIDGEDB_CONNECTION_4,
+			BRIDGEDB_CONNECTION_5 };
+		
+	}
 	
 	public void init(PvDesktop desktop) 
 	{
@@ -56,9 +96,33 @@ public class AdvancedSynonymPlugin implements Plugin
 		{
 			Logger.log.error ("Could not register IDMapper: ", ex);
 		}
+		
+		PreferenceManager pm = PreferenceManager.getCurrent();
+		GdbManager mgr = desktop.getSwingEngine().getGdbManager();
+		for (int i = 0; i < AdvancedSynonymPreferences.connectionStrings.length; ++i)
+		{
+			String s = pm.get(AdvancedSynonymPreferences.connectionStrings[i]);
+			if (!(s == null || "".equals(s)))
+			{
+				try
+				{
+					IDMapper mapper = BridgeDb.connect(s);
+					mgr.addMapper(mapper);
+					Logger.log.trace ("Added mapper: " + s); 
+				}
+				catch (IDMapperException ex)
+				{
+					Logger.log.error ("Could not restore mapping service from preferences: " + s, ex);
+				}
+			}
+		}
+
+		mgr.getCurrentGdb().setTransitive(pm.getBoolean(AdvancedSynonymPreferences.BRIDGEDB_TRANSITIVE));
 	}
 
-	public void done() {}
+	public void done() 
+	{
+	}
 
 	private final SynDlgAction synDlgAction = new SynDlgAction();
 	
