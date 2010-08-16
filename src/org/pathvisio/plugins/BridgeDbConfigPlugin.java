@@ -34,11 +34,11 @@ import org.pathvisio.preferences.PreferenceManager;
 /**
  * A tutorial implementation of a PathVisio plug-in
  */
-public class AdvancedSynonymPlugin implements Plugin
+public class BridgeDbConfigPlugin implements Plugin
 {
 	private PvDesktop desktop;
 	
-	private enum AdvancedSynonymPreferences implements Preference
+	enum AdvancedSynonymPreferences implements Preference
 	{
 		BRIDGEDB_CONNECTION_1,
 		BRIDGEDB_CONNECTION_2,
@@ -127,7 +127,7 @@ public class AdvancedSynonymPlugin implements Plugin
 	private final SynDlgAction synDlgAction = new SynDlgAction();
 	
 	/**
-	 * Display a welcome message when this action is triggered. 
+	 * Open the synonym database settings dialog 
 	 */
 	private class SynDlgAction extends AbstractAction
 	{
@@ -135,7 +135,7 @@ public class AdvancedSynonymPlugin implements Plugin
 		{
 			// The NAME property of an action is used as 
 			// the label of the menu item
-			putValue (NAME, "Synonym Database Settings...");
+			putValue (NAME, "Identifier mapping setup...");
 		}
 		
 		/**
@@ -143,7 +143,7 @@ public class AdvancedSynonymPlugin implements Plugin
 		 */
 		public void actionPerformed(ActionEvent arg0) 
 		{
-			AdvancedSynonymDlg dlg = new AdvancedSynonymDlg(desktop);
+			BridgeDbConfigDlg dlg = new BridgeDbConfigDlg(desktop);
 			dlg.createAndShowGUI();
 		}
 	}

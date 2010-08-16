@@ -51,11 +51,16 @@ import org.pathvisio.gui.swing.PvDesktop;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-public class AdvancedSynonymDlg 
+import edu.stanford.ejalbert.BrowserLauncher;
+import edu.stanford.ejalbert.exception.BrowserLaunchingExecutionException;
+import edu.stanford.ejalbert.exception.BrowserLaunchingInitializingException;
+import edu.stanford.ejalbert.exception.UnsupportedOperatingSystemException;
+
+public class BridgeDbConfigDlg 
 {
 	final PvDesktop desktop;
 	
-	AdvancedSynonymDlg(PvDesktop desktop)
+	BridgeDbConfigDlg(PvDesktop desktop)
 	{
 		this.desktop = desktop;
 	}
@@ -66,7 +71,7 @@ public class AdvancedSynonymDlg
 
 	public void createAndShowGUI()
 	{
-		final JFrame aboutDlg = new JFrame();
+		final JDialog mappersDlg = new JDialog(desktop.getFrame());
 		
 		FormLayout layout = new FormLayout(
 				"4dlu, 50dlu:grow, 4dlu, 50dlu:grow, 4dlu",
@@ -96,8 +101,8 @@ public class AdvancedSynonymDlg
 		btnOk.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e)
 			{
-				aboutDlg.setVisible(false);
-				aboutDlg.dispose();
+				mappersDlg.setVisible(false);
+				mappersDlg.dispose();
 			}
 		});
 		
@@ -117,7 +122,33 @@ public class AdvancedSynonymDlg
 				removePressed();
 			}
 		});
-
+		
+		JButton btnHelp = new JButton("Help");
+		btnHelp.setToolTipText("Help about this dialog");
+		btnHelp.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e)
+			{
+				BrowserLauncher bl;
+				try
+				{
+					bl = new BrowserLauncher(null);
+					bl.openURLinBrowser("http://www.pathvisio.org/wiki/BridgeDbConfigPluginHelp");
+				}
+				catch (BrowserLaunchingInitializingException e1)
+				{
+					Logger.log.error("Couldn't open browser", e1);
+				}
+				catch (UnsupportedOperatingSystemException e1)
+				{
+					Logger.log.error("Couldn't open browser", e1);
+				}
+				catch (BrowserLaunchingExecutionException e1)
+				{
+					Logger.log.error("Couldn't open browser", e1);
+				}
+			}
+		});
+		
 		dialogBox.add (new JScrollPane(list), cc.xy (2, 2));
 		dialogBox.add (new JScrollPane(txtInfo), cc.xy (4, 2));
 
@@ -138,14 +169,15 @@ public class AdvancedSynonymDlg
 		buttonPanel.add (btnOk);
 		buttonPanel.add (btnAdd);
 		buttonPanel.add (btnRemove);
+		buttonPanel.add (btnHelp);
 		dialogBox.add (buttonPanel, cc.xyw (2, 6, 3));			
 		
-		aboutDlg.setTitle("Advanced Synonym Database Settings");
-		aboutDlg.add (dialogBox);
-		aboutDlg.pack();
-		aboutDlg.setSize(600, 400);
-		aboutDlg.setLocationRelativeTo(desktop.getFrame());
-		aboutDlg.setVisible(true);
+		mappersDlg.setTitle("BridgeDb Configuration");
+		mappersDlg.add (dialogBox);
+		mappersDlg.pack();
+		mappersDlg.setSize(600, 400);
+		mappersDlg.setLocationRelativeTo(desktop.getFrame());
+		mappersDlg.setVisible(true);
 	}
 
 	private void removePressed()
@@ -168,8 +200,13 @@ public class AdvancedSynonymDlg
 	
 	private void addPressed()
 	{
-		String connectString = HistoryInputDlg.getInputWithHistory(desktop.getFrame(), "Please enter a BridgeDb connection String", 
-				"Add connection");
+//		String connectString = HistoryInputDlg.getInputWithHistory(desktop.getFrame(), "Please enter a BridgeDb connection String", 
+//				"Add connection");
+		
+		IdMapperDlg dlg = new IdMapperDlg(desktop.getFrame());
+		dlg.setVisible(true);
+
+		String connectString = dlg.getConnectionString();
 		if (connectString != null)
 		{
 			GdbManager manager = desktop.getSwingEngine().getGdbManager();

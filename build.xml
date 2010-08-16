@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
-<project name="BridgeDbSettingsPlugin" default="install" basedir=".">
+<project name="BridgeDbConfigPlugin" default="jar" basedir=".">
   <!-- always be java 1.5 compatible -->
   <property name="ant.build.javac.target" value="1.5"/>
   <property name="ant.build.javac.source" value="1.5"/>
   
-  <property name="base.name" value="bridgedb-settings-plugin"/>
+  <property name="base.name" value="bridgedb-config-plugin"/>
   <property name="jar.name" value="${base.name}.jar"/>
   <property name="pathvisio.dir" value="../.."/>
 
@@ -12,12 +12,13 @@
   <property name="install.dir" value="${env.HOME}/.PathVisio/plugins/"/>
   
   <path id="project.class.path">
-	<path id="project.class.path">
-		<pathelement location="${pathvisio.dir}/pathvisio.jar"/>
-		<fileset dir="${pathvisio.dir}/lib">
-			<include name="**/*.jar"/>
-		</fileset>
-	</path>
+	<pathelement location="${pathvisio.dir}/pathvisio.jar"/>
+	<fileset dir="${pathvisio.dir}/lib">
+		<include name="**/*.jar"/>
+	</fileset>
+	<fileset dir="lib">
+		<include name="*.jar"/>
+	</fileset>
   </path>
   
   <target name="prepare">
@@ -42,11 +43,17 @@
 	<unjar dest="build/libs">
 		<fileset dir="lib" includes="*.jar" />
 	</unjar>
+	<!-- backwards compatibility hack for pathvisio 2.0.7. This can be removed after 2.0.8 is released !-->
+	<copy toDir="build/libs">
+		<fileset dir="${pathvisio.dir}/build/swing" includes="org/pathvisio/gui/parameter/*.class" />
+	</copy>
+	<!-- end hack !-->
 	<jar jarfile="${jar.name}">
 		<manifest>
-			<attribute name="PathVisio-Plugin-Class" value="org.pathvisio.plugins.AdvancedSynonymPlugin"/>
+			<attribute name="PathVisio-Plugin-Class" value="org.pathvisio.plugins.BridgeDbConfigPlugin"/>
 		</manifest>
 	  <fileset dir="build/code" includes="**/*.class"/>
+	  <fileset dir="build/libs" includes="**/*.class"/>
 	</jar>
   </target>
 
