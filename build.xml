@@ -43,11 +43,6 @@
 	<unjar dest="build/libs">
 		<fileset dir="lib" includes="*.jar" />
 	</unjar>
-	<!-- backwards compatibility hack for pathvisio 2.0.7. This can be removed after 2.0.8 is released !-->
-	<copy toDir="build/libs">
-		<fileset dir="${pathvisio.dir}/build/swing" includes="org/pathvisio/gui/parameter/*.class" />
-	</copy>
-	<!-- end hack !-->
 	<jar jarfile="${jar.name}">
 		<manifest>
 			<attribute name="PathVisio-Plugin-Class" value="org.pathvisio.plugins.BridgeDbConfigPlugin"/>
