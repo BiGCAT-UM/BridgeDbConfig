@@ -68,10 +68,11 @@ public class BridgeDbConfigDlg
 	private JList list;
 	private JTextArea txtInfo;
 	private JButton btnRemove;
+	private JDialog mappersDlg;
 
 	public void createAndShowGUI()
 	{
-		final JDialog mappersDlg = new JDialog(desktop.getFrame());
+		mappersDlg = new JDialog(desktop.getFrame());
 		
 		FormLayout layout = new FormLayout(
 				"4dlu, 50dlu:grow, 4dlu, 50dlu:grow, 4dlu",
@@ -203,7 +204,7 @@ public class BridgeDbConfigDlg
 //		String connectString = HistoryInputDlg.getInputWithHistory(desktop.getFrame(), "Please enter a BridgeDb connection String", 
 //				"Add connection");
 		
-		IdMapperDlg dlg = new IdMapperDlg(desktop.getFrame());
+		IdMapperDlg dlg = new IdMapperDlg(desktop);
 		dlg.setVisible(true);
 
 		String connectString = dlg.getConnectionString();

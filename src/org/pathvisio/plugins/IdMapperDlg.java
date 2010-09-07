@@ -1,7 +1,6 @@
 package org.pathvisio.plugins;
 
 import java.awt.CardLayout;
-import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -9,26 +8,17 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JEditorPane;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.SwingUtilities;
 import javax.swing.border.BevelBorder;
-import javax.swing.event.HyperlinkEvent;
-import javax.swing.event.HyperlinkListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import com.jgoodies.forms.factories.ButtonBarFactory;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
-
-import edu.stanford.ejalbert.BrowserLauncher;
-import edu.stanford.ejalbert.exception.BrowserLaunchingExecutionException;
-import edu.stanford.ejalbert.exception.BrowserLaunchingInitializingException;
-import edu.stanford.ejalbert.exception.UnsupportedOperatingSystemException;
 
 import org.pathvisio.bridgedb.parameters.BridgeDbParameterModel;
 import org.pathvisio.bridgedb.parameters.BridgeRestParameterModel;
@@ -38,16 +28,17 @@ import org.pathvisio.bridgedb.parameters.JdbcParameterModel;
 import org.pathvisio.bridgedb.parameters.PgdbParameterModel;
 import org.pathvisio.debug.Logger;
 import org.pathvisio.gui.parameter.ParameterPanel;
+import org.pathvisio.gui.swing.PvDesktop;
 
-public class IdMapperDlg extends JDialog implements ActionListener, HyperlinkListener
+public class IdMapperDlg extends JDialog implements ActionListener
 {
 	JPanel cardPanel;
 	CardLayout cardLayout;
 	JEditorPane helpLabel;
 	
-	public IdMapperDlg(JFrame parent)
+	public IdMapperDlg(PvDesktop desktop)
 	{		
-		super(parent, "Configure new ID Mapper");
+		super(desktop.getFrame(), "Configure new ID Mapper");
 
 		setModal(true);
 		setResizable(true);
@@ -75,7 +66,7 @@ public class IdMapperDlg extends JDialog implements ActionListener, HyperlinkLis
 		helpLabel = new JEditorPane();
 		helpLabel.setEditable(false);
 		helpLabel.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
-		helpLabel.addHyperlinkListener(this);
+		helpLabel.addHyperlinkListener(desktop.getSwingEngine());
 		helpLabel.setContentType( "text/html" );
 
 		lMappers = new JList(models);
@@ -118,7 +109,7 @@ public class IdMapperDlg extends JDialog implements ActionListener, HyperlinkLis
 		btnOk.addActionListener(this);
 		btnCancel.addActionListener(this);
 		pack();
-		setLocationRelativeTo(parent);
+		setLocationRelativeTo(desktop.getFrame());
 	}
 
 	JList lMappers;
@@ -139,36 +130,6 @@ public class IdMapperDlg extends JDialog implements ActionListener, HyperlinkLis
 			return null;
 		else
 			return ((BridgeDbParameterModel)lMappers.getSelectedValue()).getConnectionString();
-	}
-
-	//TODO: just use PvDesktop as hyperlinklistener for everything
-	@Override
-	public void hyperlinkUpdate(HyperlinkEvent arg0)
-	{
-		if (arg0.getEventType() == HyperlinkEvent.EventType.ACTIVATED)
-		{
-			try
-			{
-				BrowserLauncher launcher = new BrowserLauncher(null);
-				launcher.openURLinBrowser(arg0.getURL().toString());
-			}
-			catch (BrowserLaunchingInitializingException e)
-			{
-				Logger.log.error("Couldn't open url in browser ", e);
-			}
-			catch (BrowserLaunchingExecutionException e)
-			{
-				Logger.log.error("Couldn't open url in browser ", e);
-			}
-			catch (UnsupportedOperatingSystemException e)
-			{
-				Logger.log.error("Couldn't open url in browser ", e);
-			}
-		}
-		else
-		{
-			//TODO: show link in status bar
-		}
 	}
 
 }
