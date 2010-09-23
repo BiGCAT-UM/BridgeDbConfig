@@ -104,6 +104,7 @@ public class IdMapperDlg extends JDialog implements ActionListener
         	}
         }
         cardPanel.add (new JPanel(), "no selection"); // empty initial panel
+        cardLayout.show(cardPanel, "no selection");
         
 		setContentPane (panel);
 		btnOk.addActionListener(this);
