@@ -47,6 +47,8 @@ import org.bridgedb.IDMapperException;
 import org.pathvisio.data.GdbManager;
 import org.pathvisio.debug.Logger;
 import org.pathvisio.gui.swing.PvDesktop;
+import org.pathvisio.plugins.BridgeDbConfigPlugin.AdvancedSynonymPreferences;
+import org.pathvisio.preferences.PreferenceManager;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
@@ -104,6 +106,8 @@ public class BridgeDbConfigDlg
 			{
 				mappersDlg.setVisible(false);
 				mappersDlg.dispose();
+				
+				writeMapperPreferences();
 			}
 		});
 		
@@ -181,6 +185,28 @@ public class BridgeDbConfigDlg
 		mappersDlg.setVisible(true);
 	}
 
+	protected void writeMapperPreferences()
+	{
+		PreferenceManager pm = PreferenceManager.getCurrent();
+		GdbManager gm = desktop.getSwingEngine().getGdbManager();
+		
+		// clear all old preferences
+		for (int i = 0; i < AdvancedSynonymPreferences.connectionStrings.length; ++i)
+		{
+			pm.set(AdvancedSynonymPreferences.connectionStrings[i], null);
+		}
+		
+		int pos = 0;
+		for (int i = 0; i < gm.getSize(); ++i)
+		{
+			IDMapper mapper = (IDMapper)gm.getElementAt(i);
+			if (mapper == gm.getGeneDb() || mapper == gm.getMetaboliteDb()) continue;
+			String s = gm.getConnectionStringAt(i);
+			pm.set(AdvancedSynonymPreferences.connectionStrings[pos], s);
+			pos++;
+		}
+	}
+
 	private void removePressed()
 	{
 		int selected = list.getSelectedIndex();
@@ -201,9 +227,6 @@ public class BridgeDbConfigDlg
 	
 	private void addPressed()
 	{
-//		String connectString = HistoryInputDlg.getInputWithHistory(desktop.getFrame(), "Please enter a BridgeDb connection String", 
-//				"Add connection");
-		
 		IdMapperDlg dlg = new IdMapperDlg(desktop);
 		dlg.setVisible(true);
 
@@ -213,8 +236,7 @@ public class BridgeDbConfigDlg
 			GdbManager manager = desktop.getSwingEngine().getGdbManager();
 			try
 			{
-				IDMapper mapper = BridgeDb.connect(connectString);
-				manager.addMapper(mapper);
+				manager.addMapper(connectString);
 			}
 			catch (IDMapperException ex)
 			{

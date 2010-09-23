@@ -45,6 +45,11 @@ public class BridgeDbConfigPlugin implements Plugin
 		BRIDGEDB_CONNECTION_3,
 		BRIDGEDB_CONNECTION_4,
 		BRIDGEDB_CONNECTION_5,
+		BRIDGEDB_CONNECTION_6,
+		BRIDGEDB_CONNECTION_7,
+		BRIDGEDB_CONNECTION_8,
+		BRIDGEDB_CONNECTION_9,
+		BRIDGEDB_CONNECTION_10,
 		
 		BRIDGEDB_TRANSITIVE("" + false);
 		
@@ -106,8 +111,7 @@ public class BridgeDbConfigPlugin implements Plugin
 			{
 				try
 				{
-					IDMapper mapper = BridgeDb.connect(s);
-					mgr.addMapper(mapper);
+					mgr.addMapper(s);
 					Logger.log.trace ("Added mapper: " + s); 
 				}
 				catch (IDMapperException ex)
