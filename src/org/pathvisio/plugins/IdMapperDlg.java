@@ -20,14 +20,14 @@ import com.jgoodies.forms.factories.ButtonBarFactory;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-import org.pathvisio.bridgedb.parameters.BridgeDbParameterModel;
-import org.pathvisio.bridgedb.parameters.BridgeRestParameterModel;
-import org.pathvisio.bridgedb.parameters.ConnectionStringParameterModel;
-import org.pathvisio.bridgedb.parameters.FileParameterModel;
-import org.pathvisio.bridgedb.parameters.JdbcParameterModel;
-import org.pathvisio.bridgedb.parameters.PgdbParameterModel;
+import org.bridgedb.gui.BridgeDbParameterModel;
+import org.bridgedb.gui.BridgeRestParameterModel;
+import org.bridgedb.gui.ConnectionStringParameterModel;
+import org.bridgedb.gui.FileParameterModel;
+import org.bridgedb.gui.JdbcParameterModel;
+import org.bridgedb.gui.ParameterPanel;
+import org.bridgedb.gui.PgdbParameterModel;
 import org.pathvisio.debug.Logger;
-import org.pathvisio.gui.parameter.ParameterPanel;
 import org.pathvisio.gui.swing.PvDesktop;
 
 public class IdMapperDlg extends JDialog implements ActionListener
