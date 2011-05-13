@@ -27,8 +27,8 @@ import org.bridgedb.gui.FileParameterModel;
 import org.bridgedb.gui.JdbcParameterModel;
 import org.bridgedb.gui.ParameterPanel;
 import org.bridgedb.gui.PgdbParameterModel;
-import org.pathvisio.debug.Logger;
-import org.pathvisio.gui.swing.PvDesktop;
+import org.pathvisio.core.debug.Logger;
+import org.pathvisio.desktop.PvDesktop;
 
 public class IdMapperDlg extends JDialog implements ActionListener
 {

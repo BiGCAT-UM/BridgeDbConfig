@@ -24,12 +24,12 @@ import javax.swing.JOptionPane;
 import org.bridgedb.BridgeDb;
 import org.bridgedb.IDMapper;
 import org.bridgedb.IDMapperException;
-import org.pathvisio.data.GdbManager;
-import org.pathvisio.debug.Logger;
-import org.pathvisio.gui.swing.PvDesktop;
-import org.pathvisio.plugin.Plugin;
-import org.pathvisio.preferences.Preference;
-import org.pathvisio.preferences.PreferenceManager;
+import org.pathvisio.core.data.GdbManager;
+import org.pathvisio.core.debug.Logger;
+import org.pathvisio.core.preferences.Preference;
+import org.pathvisio.core.preferences.PreferenceManager;
+import org.pathvisio.desktop.PvDesktop;
+import org.pathvisio.desktop.plugin.Plugin;
 
 /**
  * A tutorial implementation of a PathVisio plug-in
