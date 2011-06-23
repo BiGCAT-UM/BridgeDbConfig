@@ -1,4 +1,4 @@
-package org.pathvisio.plugins;
+package org.pathvisio.bridgedb;
 
 import java.awt.CardLayout;
 import java.awt.event.ActionEvent;

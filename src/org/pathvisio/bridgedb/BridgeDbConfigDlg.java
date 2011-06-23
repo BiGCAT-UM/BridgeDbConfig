@@ -14,7 +14,7 @@
 // See the License for the specific language governing permissions and 
 // limitations under the License.
 //
-package org.pathvisio.plugins;
+package org.pathvisio.bridgedb;
 
 import java.awt.Component;
 import java.awt.event.ActionEvent;
@@ -44,11 +44,11 @@ import org.bridgedb.BridgeDb;
 import org.bridgedb.IDMapper;
 import org.bridgedb.IDMapperCapabilities;
 import org.bridgedb.IDMapperException;
+import org.pathvisio.bridgedb.BridgeDbConfigPlugin.AdvancedSynonymPreferences;
 import org.pathvisio.core.data.GdbManager;
 import org.pathvisio.core.debug.Logger;
 import org.pathvisio.core.preferences.PreferenceManager;
 import org.pathvisio.desktop.PvDesktop;
-import org.pathvisio.plugins.BridgeDbConfigPlugin.AdvancedSynonymPreferences;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
