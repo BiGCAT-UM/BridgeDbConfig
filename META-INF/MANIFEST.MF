@@ -11,4 +11,10 @@ Require-Bundle: org.pathvisio.core;bundle-version="2.0.11",
  org.pathvisio.browserlauncher;bundle-version="1.0.0",
  org.eclipse.osgi,
  org.bridgedb;bundle-version="1.1.0",
- pvplugins-BridgeDbConfig-deps;bundle-version="1.0.0"
+ org.bridgedb.gui;bundle-version="1.1.0",
+ org.bridgedb.webservice.bridgerest;bundle-version="1.1.0",
+ org.bridgedb.webservice.biomart;bundle-version="1.1.0",
+ org.bridgedb.webservice.cronos;bundle-version="1.1.0",
+ org.bridgedb.webservice.picr;bundle-version="1.1.0",
+ org.bridgedb.webservice.synergizer;bundle-version="1.1.0"
+Import-Package: com.mysql.jdbc
