@@ -17,8 +17,12 @@
 package org.pathvisio.bridgedb;
 
 import java.awt.Component;
+import java.awt.Desktop;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -33,14 +37,12 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import javax.swing.JTextField;
 import javax.swing.ListCellRenderer;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import org.bridgedb.BridgeDb;
 import org.bridgedb.IDMapper;
 import org.bridgedb.IDMapperCapabilities;
 import org.bridgedb.IDMapperException;
@@ -48,23 +50,24 @@ import org.pathvisio.bridgedb.BridgeDbConfigPlugin.AdvancedSynonymPreferences;
 import org.pathvisio.core.data.GdbManager;
 import org.pathvisio.core.debug.Logger;
 import org.pathvisio.core.preferences.PreferenceManager;
-import org.pathvisio.desktop.PvDesktop;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-import edu.stanford.ejalbert.BrowserLauncher;
-import edu.stanford.ejalbert.exception.BrowserLaunchingExecutionException;
-import edu.stanford.ejalbert.exception.BrowserLaunchingInitializingException;
-import edu.stanford.ejalbert.exception.UnsupportedOperatingSystemException;
-
 public class BridgeDbConfigDlg 
 {
-	final PvDesktop desktop;
+	private final GdbManager gdbManager;
+	private final PreferenceManager pm;
+	private final JFrame parentFrame;
 	
-	BridgeDbConfigDlg(PvDesktop desktop)
+	/**
+	 * @pm may be null
+	 */
+	public BridgeDbConfigDlg(JFrame frame, PreferenceManager pm, GdbManager gdbManager)
 	{
-		this.desktop = desktop;
+		this.gdbManager = gdbManager;
+		this.pm = pm;
+		this.parentFrame = frame;
 	}
 
 	private JList list;
@@ -74,7 +77,7 @@ public class BridgeDbConfigDlg
 
 	public void createAndShowGUI()
 	{
-		mappersDlg = new JDialog(desktop.getFrame());
+		mappersDlg = new JDialog(parentFrame);
 		
 		FormLayout layout = new FormLayout(
 				"4dlu, 50dlu:grow, 4dlu, 50dlu:grow, 4dlu",
@@ -85,8 +88,7 @@ public class BridgeDbConfigDlg
 		
 		txtInfo = new JTextArea(40, 5);
 		
-		list = new JList(
-				desktop.getSwingEngine().getGdbManager());
+		list = new JList(gdbManager);
 		list.setCellRenderer(new BridgeRenderer());
 		list.getSelectionModel().addListSelectionListener(new ListSelectionListener()
 		{
@@ -133,23 +135,17 @@ public class BridgeDbConfigDlg
 		btnHelp.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e)
 			{
-				BrowserLauncher bl;
 				try
 				{
-					bl = new BrowserLauncher(null);
-					bl.openURLinBrowser("http://www.pathvisio.org/wiki/BridgeDbConfigPluginHelp");
+					Desktop.getDesktop().browse(new URI("http://www.pathvisio.org/wiki/BridgeDbConfigPluginHelp"));
 				}
-				catch (BrowserLaunchingInitializingException e1)
+				catch (IOException e1)
 				{
-					Logger.log.error("Couldn't open browser", e1);
+					Logger.log.error ("Couldn't open Browser", e1);
 				}
-				catch (UnsupportedOperatingSystemException e1)
+				catch (URISyntaxException e1)
 				{
-					Logger.log.error("Couldn't open browser", e1);
-				}
-				catch (BrowserLaunchingExecutionException e1)
-				{
-					Logger.log.error("Couldn't open browser", e1);
+					Logger.log.error ("Couldn't open Browser", e1);
 				}
 			}
 		});
@@ -157,7 +153,7 @@ public class BridgeDbConfigDlg
 		dialogBox.add (new JScrollPane(list), cc.xy (2, 2));
 		dialogBox.add (new JScrollPane(txtInfo), cc.xy (4, 2));
 
-		boolean isTransitive = desktop.getSwingEngine().getGdbManager().getCurrentGdb().getTransitive();
+		boolean isTransitive = gdbManager.getCurrentGdb().getTransitive();
 		final JCheckBox ckTransitive = new JCheckBox("Transitive", isTransitive);
 		
 		dialogBox.add (ckTransitive, cc.xyw (2,4,3));
@@ -165,7 +161,7 @@ public class BridgeDbConfigDlg
 		{
 			public void stateChanged(ChangeEvent arg0) 
 			{
-				desktop.getSwingEngine().getGdbManager().getCurrentGdb().
+				gdbManager.getCurrentGdb().
 					setTransitive(ckTransitive.isSelected());
 			}
 		});
@@ -181,14 +177,13 @@ public class BridgeDbConfigDlg
 		mappersDlg.add (dialogBox);
 		mappersDlg.pack();
 		mappersDlg.setSize(600, 400);
-		mappersDlg.setLocationRelativeTo(desktop.getFrame());
+		mappersDlg.setLocationRelativeTo(parentFrame);
 		mappersDlg.setVisible(true);
 	}
 
 	protected void writeMapperPreferences()
 	{
-		PreferenceManager pm = PreferenceManager.getCurrent();
-		GdbManager gm = desktop.getSwingEngine().getGdbManager();
+		if (pm == null) return;
 		
 		// clear all old preferences
 		for (int i = 0; i < AdvancedSynonymPreferences.connectionStrings.length; ++i)
@@ -197,11 +192,11 @@ public class BridgeDbConfigDlg
 		}
 		
 		int pos = 0;
-		for (int i = 0; i < gm.getSize(); ++i)
+		for (int i = 0; i < gdbManager.getSize(); ++i)
 		{
-			IDMapper mapper = (IDMapper)gm.getElementAt(i);
-			if (mapper == gm.getGeneDb() || mapper == gm.getMetaboliteDb()) continue;
-			String s = gm.getConnectionStringAt(i);
+			IDMapper mapper = (IDMapper)gdbManager.getElementAt(i);
+			if (mapper == gdbManager.getGeneDb() || mapper == gdbManager.getMetaboliteDb()) continue;
+			String s = gdbManager.getConnectionStringAt(i);
 			pm.set(AdvancedSynonymPreferences.connectionStrings[pos], s);
 			pos++;
 		}
@@ -212,10 +207,9 @@ public class BridgeDbConfigDlg
 		int selected = list.getSelectedIndex();
 		if (selected >= 0)
 		{
-			GdbManager manager = desktop.getSwingEngine().getGdbManager();
-			IDMapper mapper = manager.getCurrentGdb().getIDMapperAt(selected);
+			IDMapper mapper = gdbManager.getCurrentGdb().getIDMapperAt(selected);
 			try {
-				manager.removeMapper(mapper);
+				gdbManager.removeMapper(mapper);
 			} 
 			catch (IDMapperException e1) 
 			{
@@ -227,16 +221,15 @@ public class BridgeDbConfigDlg
 	
 	private void addPressed()
 	{
-		IdMapperDlg dlg = new IdMapperDlg(desktop);
+		IdMapperDlg dlg = new IdMapperDlg(mappersDlg);
 		dlg.setVisible(true);
 
 		String connectString = dlg.getConnectionString();
 		if (connectString != null)
 		{
-			GdbManager manager = desktop.getSwingEngine().getGdbManager();
 			try
 			{
-				manager.addMapper(connectString);
+				gdbManager.addMapper(connectString);
 			}
 			catch (IDMapperException ex)
 			{
@@ -262,7 +255,7 @@ public class BridgeDbConfigDlg
 		else
 		{
 			txtInfo.setText ("");
-			IDMapper mapper = (IDMapper)desktop.getSwingEngine().getGdbManager().getElementAt(selected);
+			IDMapper mapper = (IDMapper)gdbManager.getElementAt(selected);
 			IDMapperCapabilities caps = mapper.getCapabilities(); 
 			List<String> sortedKeys = new ArrayList<String>(caps.getKeys());
 			Collections.sort(sortedKeys);

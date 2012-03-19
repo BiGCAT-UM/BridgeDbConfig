@@ -1,8 +1,11 @@
 package org.pathvisio.bridgedb;
 
 import java.awt.CardLayout;
+import java.awt.Desktop;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.net.URISyntaxException;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -13,6 +16,8 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.BevelBorder;
+import javax.swing.event.HyperlinkEvent;
+import javax.swing.event.HyperlinkListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -28,17 +33,16 @@ import org.bridgedb.gui.JdbcParameterModel;
 import org.bridgedb.gui.ParameterPanel;
 import org.bridgedb.gui.PgdbParameterModel;
 import org.pathvisio.core.debug.Logger;
-import org.pathvisio.desktop.PvDesktop;
 
-public class IdMapperDlg extends JDialog implements ActionListener
+public class IdMapperDlg extends JDialog implements ActionListener, HyperlinkListener
 {
 	JPanel cardPanel;
 	CardLayout cardLayout;
 	JEditorPane helpLabel;
 	
-	public IdMapperDlg(PvDesktop desktop)
+	public IdMapperDlg(JDialog parentDialog)
 	{		
-		super(desktop.getFrame(), "Configure new ID Mapper");
+		super(parentDialog, "Configure new ID Mapper");
 
 		setModal(true);
 		setResizable(true);
@@ -66,7 +70,7 @@ public class IdMapperDlg extends JDialog implements ActionListener
 		helpLabel = new JEditorPane();
 		helpLabel.setEditable(false);
 		helpLabel.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
-		helpLabel.addHyperlinkListener(desktop.getSwingEngine());
+		helpLabel.addHyperlinkListener(this);
 		helpLabel.setContentType( "text/html" );
 
 		lMappers = new JList(models);
@@ -110,7 +114,7 @@ public class IdMapperDlg extends JDialog implements ActionListener
 		btnOk.addActionListener(this);
 		btnCancel.addActionListener(this);
 		pack();
-		setLocationRelativeTo(desktop.getFrame());
+		setLocationRelativeTo(parentDialog);
 	}
 
 	JList lMappers;
@@ -131,6 +135,28 @@ public class IdMapperDlg extends JDialog implements ActionListener
 			return null;
 		else
 			return ((BridgeDbParameterModel)lMappers.getSelectedValue()).getConnectionString();
+	}
+
+	@Override
+	public void hyperlinkUpdate(HyperlinkEvent e)
+	{
+		if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED)
+		{
+			try
+			{
+				Desktop.getDesktop().browse(e.getURL().toURI());
+			}
+			catch (IOException e1)
+			{
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			catch (URISyntaxException e1)
+			{
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
 	}
 
 }

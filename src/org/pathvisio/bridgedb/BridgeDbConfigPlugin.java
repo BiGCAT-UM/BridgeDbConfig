@@ -19,10 +19,7 @@ package org.pathvisio.bridgedb;
 import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
-import javax.swing.JOptionPane;
 
-import org.bridgedb.BridgeDb;
-import org.bridgedb.IDMapper;
 import org.bridgedb.IDMapperException;
 import org.pathvisio.core.data.GdbManager;
 import org.pathvisio.core.debug.Logger;
@@ -147,7 +144,7 @@ public class BridgeDbConfigPlugin implements Plugin
 		 */
 		public void actionPerformed(ActionEvent arg0) 
 		{
-			BridgeDbConfigDlg dlg = new BridgeDbConfigDlg(desktop);
+			BridgeDbConfigDlg dlg = new BridgeDbConfigDlg(desktop.getFrame(), PreferenceManager.getCurrent(), desktop.getSwingEngine().getGdbManager());
 			dlg.createAndShowGUI();
 		}
 	}
