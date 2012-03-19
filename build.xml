@@ -1,10 +1,7 @@
 <?xml version="1.0"?>
 <project name="BridgeDbConfig" default="jar" basedir=".">
-  
-  <property name="base.name" value="BridgeDbConfig"/>
-  <property name="pathvisio.dir" value="../.."/>
 
-  <property name="plugin.class" value="org.pathvisio.bridgedb.Activator"/>
+  <property name="pathvisio.dir" value="../.."/>
   
   	<path id="project.class.path">
 		<fileset dir="${pathvisio.dir}/modules">
