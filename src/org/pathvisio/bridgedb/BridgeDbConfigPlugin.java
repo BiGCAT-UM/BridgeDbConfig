@@ -26,6 +26,7 @@ import org.bridgedb.gui.BridgeRestParameterModel;
 import org.bridgedb.gui.ConnectionStringParameterModel;
 import org.bridgedb.gui.FileParameterModel;
 import org.bridgedb.gui.JdbcParameterModel;
+import org.bridgedb.gui.OrthoXmlParameterModel;
 import org.bridgedb.gui.PgdbParameterModel;
 import org.pathvisio.core.data.GdbManager;
 import org.pathvisio.core.debug.Logger;
@@ -98,7 +99,8 @@ public class BridgeDbConfigPlugin implements Plugin
 		 		new FileParameterModel(),
 		 		new BridgeRestParameterModel(),
 		 		new JdbcParameterModel(),
-		 		new ConnectionStringParameterModel()
+		 		new OrthoXmlParameterModel(),
+		 		new ConnectionStringParameterModel(),
         };
 
         for (BridgeDbParameterModel model : models)

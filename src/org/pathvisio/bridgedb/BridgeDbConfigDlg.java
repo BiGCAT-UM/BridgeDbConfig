@@ -231,6 +231,7 @@ public class BridgeDbConfigDlg
 		String connectString = dlg.getConnectionString();
 		if (connectString != null)
 		{
+			Logger.log.info ("Using connection string [" + connectString + "]");
 			try
 			{
 				gdbManager.addMapper(connectString);
