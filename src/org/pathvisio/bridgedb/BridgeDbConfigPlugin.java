@@ -21,6 +21,12 @@ import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 
 import org.bridgedb.IDMapperException;
+import org.bridgedb.gui.BridgeDbParameterModel;
+import org.bridgedb.gui.BridgeRestParameterModel;
+import org.bridgedb.gui.ConnectionStringParameterModel;
+import org.bridgedb.gui.FileParameterModel;
+import org.bridgedb.gui.JdbcParameterModel;
+import org.bridgedb.gui.PgdbParameterModel;
 import org.pathvisio.core.data.GdbManager;
 import org.pathvisio.core.debug.Logger;
 import org.pathvisio.core.preferences.Preference;
@@ -73,6 +79,10 @@ public class BridgeDbConfigPlugin implements Plugin
 			BRIDGEDB_CONNECTION_5 };
 		
 	}
+
+	private BridgeDbParameterModel models[];
+	
+	public BridgeDbParameterModel[] getModels() { return models; }
 	
 	public void init(PvDesktop desktop) 
 	{
@@ -82,23 +92,27 @@ public class BridgeDbConfigPlugin implements Plugin
 		// register our action in the "Help" menu.
 		desktop.registerMenuAction ("Data", synDlgAction);
 		
-		// register more idmapper Drivers
-		try
-		{
-			Class.forName("org.bridgedb.file.IDMapperText");
-			Class.forName("org.bridgedb.webservice.bridgerest.BridgeRest");
-			Class.forName("org.bridgedb.webservice.biomart.IDMapperBiomart");
-			Class.forName("org.bridgedb.webservice.picr.IDMapperPicr");
-			Class.forName("org.bridgedb.webservice.picr.IDMapperPicrRest");
-			Class.forName("org.bridgedb.webservice.cronos.IDMapperCronos");
-			Class.forName("org.bridgedb.webservice.synergizer.IDMapperSynergizer");
-			Class.forName ("com.mysql.jdbc.Driver");
-		}
-		catch (ClassNotFoundException ex)
-		{
-			Logger.log.error ("Could not register IDMapper: ", ex);
-		}
-		
+        models = new BridgeDbParameterModel[] 
+        {
+		 		new PgdbParameterModel(),
+		 		new FileParameterModel(),
+		 		new BridgeRestParameterModel(),
+		 		new JdbcParameterModel(),
+		 		new ConnectionStringParameterModel()
+        };
+
+        for (BridgeDbParameterModel model : models)
+        {
+        	try
+        	{
+        		model.loadClass();
+        	}
+    		catch (ClassNotFoundException ex)
+    		{
+    			Logger.log.error ("Could not register IDMapper due to missing class: ", ex);
+    		}
+        }
+        		
 		PreferenceManager pm = PreferenceManager.getCurrent();
 		GdbManager mgr = desktop.getSwingEngine().getGdbManager();
 		for (int i = 0; i < AdvancedSynonymPreferences.connectionStrings.length; ++i)
@@ -144,7 +158,8 @@ public class BridgeDbConfigPlugin implements Plugin
 		 */
 		public void actionPerformed(ActionEvent arg0) 
 		{
-			BridgeDbConfigDlg dlg = new BridgeDbConfigDlg(desktop.getFrame(), PreferenceManager.getCurrent(), desktop.getSwingEngine().getGdbManager());
+			BridgeDbConfigDlg dlg = new BridgeDbConfigDlg(desktop.getFrame(), 
+					PreferenceManager.getCurrent(), desktop.getSwingEngine().getGdbManager(), models);
 			dlg.createAndShowGUI();
 		}
 	}

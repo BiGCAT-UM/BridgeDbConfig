@@ -26,12 +26,7 @@ import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
 import org.bridgedb.gui.BridgeDbParameterModel;
-import org.bridgedb.gui.BridgeRestParameterModel;
-import org.bridgedb.gui.ConnectionStringParameterModel;
-import org.bridgedb.gui.FileParameterModel;
-import org.bridgedb.gui.JdbcParameterModel;
 import org.bridgedb.gui.ParameterPanel;
-import org.bridgedb.gui.PgdbParameterModel;
 import org.pathvisio.core.debug.Logger;
 
 public class IdMapperDlg extends JDialog implements ActionListener, HyperlinkListener
@@ -40,7 +35,7 @@ public class IdMapperDlg extends JDialog implements ActionListener, HyperlinkLis
 	CardLayout cardLayout;
 	JEditorPane helpLabel;
 	
-	public IdMapperDlg(JDialog parentDialog)
+	public IdMapperDlg(JDialog parentDialog, BridgeDbParameterModel[] models)
 	{		
 		super(parentDialog, "Configure new ID Mapper");
 
@@ -54,14 +49,6 @@ public class IdMapperDlg extends JDialog implements ActionListener, HyperlinkLis
 				);
 		CellConstraints cc = new CellConstraints();
 		panel.setLayout(layout);
-
-        BridgeDbParameterModel models[] = new BridgeDbParameterModel[] {
-		 		new PgdbParameterModel(),
-		 		new FileParameterModel(),
-		 		new BridgeRestParameterModel(),
-		 		new JdbcParameterModel(),
-		 		new ConnectionStringParameterModel()
-        };
 
         cardLayout = new CardLayout();
 		cardPanel = new JPanel();
@@ -83,7 +70,9 @@ public class IdMapperDlg extends JDialog implements ActionListener, HyperlinkLis
 				if (item != null)
 				{	
 					cardLayout.show(cardPanel, item.getName());
-					helpLabel.setText(item.getHelpHtml());
+					String helpText = item.getHelpHtml();
+					helpText += "<br>Status:<b> " + (item.isEnabled() ? "" : "not") + " available</b>";
+					helpLabel.setText(helpText);
 					helpLabel.setCaretPosition(0);
 				}
 			}

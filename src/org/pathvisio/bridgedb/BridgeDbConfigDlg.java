@@ -46,6 +46,7 @@ import javax.swing.event.ListSelectionListener;
 import org.bridgedb.IDMapper;
 import org.bridgedb.IDMapperCapabilities;
 import org.bridgedb.IDMapperException;
+import org.bridgedb.gui.BridgeDbParameterModel;
 import org.pathvisio.bridgedb.BridgeDbConfigPlugin.AdvancedSynonymPreferences;
 import org.pathvisio.core.data.GdbManager;
 import org.pathvisio.core.debug.Logger;
@@ -59,15 +60,17 @@ public class BridgeDbConfigDlg
 	private final GdbManager gdbManager;
 	private final PreferenceManager pm;
 	private final JFrame parentFrame;
+	private final BridgeDbParameterModel[] models;
 	
 	/**
 	 * @pm may be null
 	 */
-	public BridgeDbConfigDlg(JFrame frame, PreferenceManager pm, GdbManager gdbManager)
+	public BridgeDbConfigDlg(JFrame frame, PreferenceManager pm, GdbManager gdbManager, BridgeDbParameterModel[] models)
 	{
 		this.gdbManager = gdbManager;
 		this.pm = pm;
 		this.parentFrame = frame;
+		this.models = models;
 	}
 
 	private JList list;
@@ -163,6 +166,7 @@ public class BridgeDbConfigDlg
 			{
 				gdbManager.getCurrentGdb().
 					setTransitive(ckTransitive.isSelected());
+				pm.setBoolean(AdvancedSynonymPreferences.BRIDGEDB_TRANSITIVE, ckTransitive.isSelected());
 			}
 		});
 		
@@ -221,7 +225,7 @@ public class BridgeDbConfigDlg
 	
 	private void addPressed()
 	{
-		IdMapperDlg dlg = new IdMapperDlg(mappersDlg);
+		IdMapperDlg dlg = new IdMapperDlg(mappersDlg, models);
 		dlg.setVisible(true);
 
 		String connectString = dlg.getConnectionString();
