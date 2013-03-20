@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <project name="BridgeDbConfig" default="jar" basedir=".">
 
- 	<property name="pathvisio.dir" value="../../common-bundes/trunk/"/>
-	<property name="common.bundles" value="../../common-bundes/trunk/"/>
+ 	<property name="pathvisio.dir" value="../../common-bundles/trunk/"/>
+	<property name="common.bundles" value="../../common-bundles/trunk/"/>
   
   	<path id="project.class.path">
 		<fileset dir="${pathvisio.dir}/modules">
@@ -13,7 +13,6 @@
 		<fileset dir="${pathvisio.dir}/lib">
 			<include name="org.bridgedb.jar"/>
 			<include name="org.bridgedb.gui.jar"/>
-			<include name="org.eclipse.osgi.jar"/>
 			<include name="org.pathvisio.jgoodies.forms.jar"/>
 		</fileset>
 	</path>
