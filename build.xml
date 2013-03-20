@@ -19,7 +19,6 @@
 	</path>
 
 	<target name="install" depends="jar"> 
-		
 	</target>
 
   <import file="${common.bundles}/plugin-common.xml" />
