@@ -1,7 +1,8 @@
 <?xml version="1.0"?>
 <project name="BridgeDbConfig" default="jar" basedir=".">
 
-  <property name="pathvisio.dir" value="../.."/>
+ 	<property name="pathvisio.dir" value="../../common-bundes/trunk/"/>
+	<property name="common.bundles" value="../../common-bundes/trunk/"/>
   
   	<path id="project.class.path">
 		<fileset dir="${pathvisio.dir}/modules">
@@ -17,6 +18,6 @@
 		</fileset>
 	</path>
 
-  <import file="${pathvisio.dir}/plugin-common.xml" />
+  <import file="${common.bundles}/plugin-common.xml" />
 
 </project>
