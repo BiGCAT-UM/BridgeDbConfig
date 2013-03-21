@@ -1,8 +1,9 @@
 <?xml version="1.0"?>
 <project name="BridgeDbConfig" default="jar" basedir=".">
 
- 	<property name="pathvisio.dir" value="../../common-bundles/trunk/"/>
-	<property name="common.bundles" value="../../common-bundles/trunk/"/>
+	<property name="pathvisio.dir" value="../../../pathvisio"/>  
+	<property name="common.bundles" value="../../common-bundles"/>  
+	<import file="${pathvisio.dir}/plugin-common.xml"/>
   
   	<path id="project.class.path">
 		<fileset dir="${pathvisio.dir}/modules">
@@ -17,10 +18,4 @@
 			<include name="org.pathvisio.jgoodies.forms.jar"/>
 		</fileset>
 	</path>
-
-	<target name="install" depends="jar"> 
-	</target>
-
-  <import file="${common.bundles}/plugin-common.xml" />
-
 </project>
