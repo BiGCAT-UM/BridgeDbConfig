@@ -18,4 +18,10 @@
 			<include name="org.pathvisio.jgoodies.forms.jar"/>
 		</fileset>
 	</path>
+
+	<!-- embedded jars are embedded in the resulting bundle -->
+	<path id="embed.jars">
+		<!-- None -->
+	</path>
+
 </project>
