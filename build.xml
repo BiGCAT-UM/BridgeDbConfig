@@ -2,7 +2,6 @@
 <project name="BridgeDbConfig" default="jar" basedir=".">
 
 	<property name="pathvisio.dir" value="../../../pathvisio"/>  
-	<property name="common.bundles" value="../../common-bundles"/>  
 	<import file="${pathvisio.dir}/plugin-common.xml"/>
   
   	<path id="project.class.path">
