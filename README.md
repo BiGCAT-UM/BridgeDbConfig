@@ -1,0 +1,1 @@
+# BridgeDbConfig plugin for PathVisio
